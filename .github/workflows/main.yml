@@ -40,10 +40,3 @@ jobs:
         uses: ./github-actions-lib/http-loadtest
         with:
           configPath: ./ops/configs/loadtest.yaml
-
-      - name: Dummy Step to Keep Workflow Running
-        run: |
-          while true; do
-          curl -s -H "Host: foo.localhost" http://localhost:8001
-          curl bar.localhost
-          sleep 10;

@@ -39,7 +39,7 @@ runs:
       shell: bash
       # Create the namespace if it doesn't exist
       run: |
-        kubectl get namespace ${{ inputs.namespace }} || kubectl create namespace ${{ inputs.namespace }}
+        kubectl create namespace ${{ inputs.namespace }} --dry-run=client -o yaml | kubectl apply -f -
         kubectl -n ${{ inputs.namespace }} apply -f kustomized.yaml
     
     - name: Wait for Deployment to be Ready
