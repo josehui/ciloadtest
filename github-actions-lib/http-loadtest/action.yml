@@ -1,0 +1,49 @@
+name: 'HTTP Load Test'
+description: 'A GitHub Action to perform HTTP load testing using Vegeta'
+inputs:
+  configPath:
+    description: 'Path to the load test configuration file'
+    required: true
+  outputPath:
+    description: 'Path to the output file'
+    required: false
+    default: './loadtest_report.txt'
+  rate:
+    description: 'Requests per second'
+    required: false
+  duration:
+    description: 'Duration of the test (e.g., 10s, 1m)'
+    required: false
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Install Vegeta and Dependencies
+      id: install_loadtest_deps
+      shell: bash
+      run: |
+        curl -LO https://github.com/tsenart/vegeta/releases/download/v12.12.0/vegeta_12.12.0_linux_amd64.tar.gz
+        tar -xzf vegeta_12.12.0_linux_amd64.tar.gz
+        chmod +x vegeta
+        mv vegeta /usr/local/bin/vegeta
+        pip install pyyaml
+
+    - name: Run Vegeta Load Test and Generate Report
+      id: vegeta_test
+      shell: bash
+      # Use python for flexibility in config yaml
+      run: |
+        python3 ${GITHUB_ACTION_PATH}/run_vegeta.py -c ${{ inputs.configPath }} -o ${{ inputs.outputPath }}
+      env:
+        VEGETA_RATE: ${{ inputs.rate }}
+        VEGETA_DURATION: ${{ inputs.duration }}
+    
+    - name: Comment on PR with Load Test Results
+      if: ${{ (github.event_name == 'pull_request') && (!env.ACT) }}
+      uses: thollander/actions-comment-pull-request@v3
+      with:
+        message: |
+          Load Test Results:
+        file-path: ${{ inputs.outputPath }}
+
+

@@ -1,0 +1,3 @@
+resources:
+- ./overlays/http-echo-foo/
+- ./overlays/http-echo-bar/

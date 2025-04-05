@@ -1,0 +1,26 @@
+nameSuffix: -bar
+labels:
+  - pairs:
+      app: http-echo-bar
+    includeSelectors: true
+    includeTemplates: true
+
+resources:
+- ../../base/
+
+patches:
+- target:
+    kind: Deployment
+    name: http-echo
+  patch: |
+    - op: replace
+      path: /spec/template/spec/containers/0/args
+      value:
+      - "-text=bar"
+- target:
+    kind: Ingress
+    name: http-echo-ingress
+  patch: |
+    - op: replace
+      path: /spec/rules/0/host
+      value: bar.localhost

@@ -1,0 +1,49 @@
+name: CI Pipeline - Main
+
+on:  # yamllint disable-line rule:truthy
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:  # test
+
+jobs:
+  ci-loadtest:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Uncomment for local testing with act
+      - name: Install Local Runner Dependencies
+        if: ${{ env.ACT }}
+        uses: ./github-actions-lib/install-deps
+      
+      - name: Setup Kubernetes Cluster
+        uses: ./github-actions-lib/k8s-setup
+        with:
+          installIngress: true
+      
+      - name: Deploy http-echo to Kubernetes
+        uses: ./github-actions-lib/k8s-deploy
+        with:
+          kustomizePath: ./ops/k8s/
+          namespace: http-echo
+
+      - name: Update hostfile
+        id: update-hostfile
+        shell: bash
+        run: |
+          echo "127.0.0.1 foo.localhost" | sudo tee -a /etc/hosts
+          echo "127.0.0.1 bar.localhost" | sudo tee -a /etc/hosts
+      
+      - name: Run HTTP Load Test
+        uses: ./github-actions-lib/http-loadtest
+        with:
+          configPath: ./ops/configs/loadtest.yaml
+
+      - name: Dummy Step to Keep Workflow Running
+        run: |
+          while true; do
+          curl -s -H "Host: foo.localhost" http://localhost:8001
+          curl bar.localhost
+          sleep 10;

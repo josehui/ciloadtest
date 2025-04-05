@@ -1,0 +1,13 @@
+dist/
+.env
+.DS_Store
+*.log
+.idea/
+.vscode/
+coverage/
+*.tfstate
+*.tfstate.backup
+.terraform/
+.terraform.lock.hcl
+docker-compose.override.yml
+*.tfvars

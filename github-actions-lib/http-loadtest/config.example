@@ -1,0 +1,10 @@
+test1:
+  target: "http://foo.localhost"
+  rate: 20
+  duration: "15s"
+
+test2:
+  method: "POST"
+  target: "http://example.com"
+  rate: 30
+  duration: "20s"

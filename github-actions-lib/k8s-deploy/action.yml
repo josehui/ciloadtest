@@ -1,0 +1,50 @@
+name: K8s Deploy with Kustomize
+description: Deploy Kubernetes manifests stored in ops/k8s using Kustomize
+inputs:
+  namespace:
+    description: Kubernetes namespace to deploy to
+    required: true
+    default: default
+  kustomizePath:
+    description: Path to the Kustomize directory
+    required: true
+    default: ops/k8s/
+  kubeconfig:
+    description: Kubeconfig file content
+    required: false
+  timeoutSeconds:
+    description: Timeout in seconds for the deployment to be ready
+    required: false
+    default: "120"
+outputs: {}
+runs:
+  using: composite
+  steps:
+    - name: Set up Kubeconfig
+      id: setup-kubeconfig
+      if: ${{ inputs.kubeconfig }}
+      shell: bash
+      run: |
+        echo ${{ inputs.kubeconfig }} > kubeconfig
+        export KUBECONFIG=$PWD/kubeconfig
+
+    - name: Build Kustomize Manifests
+      id: build-kustomize
+      shell: bash
+      run: |
+        kustomize build ${{ inputs.kustomizePath }} -o kustomized.yaml
+
+    - name: Apply Manifests to Kubernetes
+      id: apply-k8s
+      shell: bash
+      # Create the namespace if it doesn't exist
+      run: |
+        kubectl get namespace ${{ inputs.namespace }} || kubectl create namespace ${{ inputs.namespace }}
+        kubectl -n ${{ inputs.namespace }} apply -f kustomized.yaml
+    
+    - name: Wait for Deployment to be Ready
+      id: wait-deployment
+      shell: bash
+      # Check for all deployments in the namespace
+      run: |
+        kubectl -n ${{ inputs.namespace }} rollout status deployment
