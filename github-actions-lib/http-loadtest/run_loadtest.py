@@ -25,7 +25,7 @@ def run_vegeta(method, target, rate, duration, output_file):
       f"vegeta report >> {output_file}"
     ]
     with open(output_file, "a") as f:
-      f.write(f"Result for {method} {target}:\n-------------------\n")
+      f.write(f"Load Test Result for {method} {target}:\n-------------------\n")
     try:
       result = subprocess.run(
         " ".join(vegeta_command),

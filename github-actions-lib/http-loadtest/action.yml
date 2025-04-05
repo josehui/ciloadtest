@@ -33,7 +33,7 @@ runs:
       shell: bash
       # Use python for flexibility in config yaml
       run: |
-        python3 ${GITHUB_ACTION_PATH}/run_vegeta.py -c ${{ inputs.configPath }} -o ${{ inputs.outputPath }}
+        python3 ${GITHUB_ACTION_PATH}/run_loadtest.py -c ${{ inputs.configPath }} -o ${{ inputs.outputPath }}
         cat ${{ inputs.outputPath }}
       env:
         VEGETA_RATE: ${{ inputs.rate }}
