@@ -1,0 +1,24 @@
+Result for GET http://foo.localhost:
+-------------------
+Requests      [total, rate, throughput]         50, 51.02, 0.00
+Duration      [total, attack, wait]             980.018ms, 979.999ms, 18.542µs
+Latencies     [min, mean, 50, 90, 95, 99, max]  18.542µs, 596.162µs, 90.187µs, 189.729µs, 340.832µs, 22.196ms, 22.196ms
+Bytes In      [total, mean]                     0, 0.00
+Bytes Out     [total, mean]                     0, 0.00
+Success       [ratio]                           0.00%
+Status Codes  [code:count]                      0:50  
+Error Set:
+Get "http://foo.localhost": lookup foo.localhost on 192.168.2.1:53: no such host
+
+Result for GET http://foo.localhost:
+-------------------
+Requests      [total, rate, throughput]         50, 51.02, 0.00
+Duration      [total, attack, wait]             980.033ms, 979.975ms, 58.25µs
+Latencies     [min, mean, 50, 90, 95, 99, max]  19.25µs, 443.935µs, 54.354µs, 129.542µs, 497.291µs, 18.216ms, 18.216ms
+Bytes In      [total, mean]                     0, 0.00
+Bytes Out     [total, mean]                     0, 0.00
+Success       [ratio]                           0.00%
+Status Codes  [code:count]                      0:50  
+Error Set:
+Get "http://foo.localhost": lookup foo.localhost on 192.168.2.1:53: no such host
+
