@@ -4,23 +4,21 @@ labels:
       app: http-echo-foo
     includeSelectors: true
     includeTemplates: true
-
 resources:
-- ../../base/
-
+  - ../../base/
 patches:
-- target:
-    kind: Deployment
-    name: http-echo
-  patch: |
-    - op: replace
-      path: /spec/template/spec/containers/0/args
-      value:
-      - "-text=foo"
-- target:
-    kind: Ingress
-    name: http-echo-ingress
-  patch: |
-    - op: replace
-      path: /spec/rules/0/host
-      value: foo.localhost
+  - target:
+      kind: Deployment
+      name: http-echo
+    patch: |
+      - op: replace
+        path: /spec/template/spec/containers/0/args
+        value:
+        - "-text=foo"
+  - target:
+      kind: Ingress
+      name: http-echo-ingress
+    patch: |
+      - op: replace
+        path: /spec/rules/0/host
+        value: foo.localhost

@@ -1,3 +1,2 @@
 resources:
-- http-echo-app.yaml
-
+  - http-echo-app.yaml

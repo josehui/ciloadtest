@@ -17,7 +17,6 @@ inputs:
     description: Whether to install Prometheus
     required: false
     default: 'false'
-
 runs:
   using: composite
   steps:
@@ -26,14 +25,12 @@ runs:
       shell: bash
       run: |
         kind create cluster --name ${{inputs.clusterName}} --config ${GITHUB_ACTION_PATH}/kind-config.yaml
-
     - name: Install Ingress Controller
       id: install-ingress
       if: ${{ inputs.installIngress == 'true' }}
       shell: bash
       run: |
         kubectl apply -f ${GITHUB_ACTION_PATH}/ingress-nginx.yaml
-    
     - name: Wait for Ingress Controller to be Ready
       id: wait-ingress
       if: ${{ inputs.installIngress == 'true' }}
@@ -43,7 +40,6 @@ runs:
           --for=condition=ready pod \
           --selector=app.kubernetes.io/component=controller \
           --timeout=120s
-      
     - name: Install metric-server
       id: install-metric-server
       if: ${{ inputs.installMetricServer == 'true' }}
@@ -54,7 +50,6 @@ runs:
         helm upgrade --install metrics-server metrics-server/metrics-server \
           --namespace kube-system \
           -f ${GITHUB_ACTION_PATH}/metrics-server-values.yaml
-
     - name: Wait for metric-server to be Ready
       id: wait-metric-server
       if: ${{ inputs.installMetricServer == 'true' }}
@@ -64,7 +59,6 @@ runs:
           --for=condition=ready pod \
           --selector=app.kubernetes.io/name=metrics-server \
           --timeout=120s
-
     - name: Install Prometheus
       id: install-prometheus
       if: ${{ inputs.installPrometheus == 'true' }}
@@ -76,7 +70,6 @@ runs:
           --namespace monitoring \
           --create-namespace \
           -f ${GITHUB_ACTION_PATH}/prometheus-values.yaml
-  
     - name: Wait for Prometheus to be Ready
       id: wait-prometheus
       if: ${{ inputs.installPrometheus == 'true' }}
@@ -86,10 +79,9 @@ runs:
         --for=condition=ready pod \
         --selector=app.kubernetes.io/name=prometheus \
         --timeout=240s
-    
     - name: Update Host file for Prometheus
       id: update-hostfile-prometheus
       if: ${{ inputs.installPrometheus == 'true' }}
       shell: bash
       run: |
-         echo "127.0.0.1 prometheus.localhost" | sudo tee -a /etc/hosts
+        echo "127.0.0.1 prometheus.localhost" | sudo tee -a /etc/hosts

@@ -27,13 +27,11 @@ runs:
       run: |
         echo ${{ inputs.kubeconfig }} > kubeconfig
         export KUBECONFIG=$PWD/kubeconfig
-
     - name: Build Kustomize Manifests
       id: build-kustomize
       shell: bash
       run: |
         kustomize build ${{ inputs.kustomizePath }} -o kustomized.yaml
-
     - name: Apply Manifests to Kubernetes
       id: apply-k8s
       shell: bash
@@ -41,7 +39,6 @@ runs:
       run: |
         kubectl create namespace ${{ inputs.namespace }} --dry-run=client -o yaml | kubectl apply -f -
         kubectl -n ${{ inputs.namespace }} apply -f kustomized.yaml
-    
     - name: Wait for Deployment to be Ready
       id: wait-deployment
       shell: bash

@@ -5,5 +5,4 @@ defaultArgs:
   # Use the minimum resolution (10s) as CI duration is short
   - --metric-resolution=10s
   - --kubelet-request-timeout=8s
-
 args: ["--kubelet-insecure-tls"]

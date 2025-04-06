@@ -20,7 +20,6 @@ inputs:
   imgurClientId:
     description: 'Client ID for Imgur'
     required: false
-
 runs:
   using: 'composite'
   steps:
@@ -33,7 +32,6 @@ runs:
         chmod +x vegeta
         mv vegeta /usr/local/bin/vegeta
         pip install pyyaml matplotlib
-
     - name: Start monitoring script
       id: start_monitoring
       if: ${{ inputs.monitorNamespace }}
@@ -42,7 +40,6 @@ runs:
       run: |
         python3 ${GITHUB_ACTION_PATH}/monitor.py ${{ inputs.monitorNamespace }} 5 600 usage.json &
         echo "Monitoring script started"
-            
     - name: Run Vegeta Load Test and Generate Report
       id: vegeta_test
       shell: bash
@@ -53,11 +50,8 @@ runs:
         VEGETA_RATE: ${{ inputs.rate }}
         VEGETA_DURATION: ${{ inputs.duration }}
         IMGUR_CLIENT_ID: ${{ inputs.imgurClientId }}
-    
     - name: Comment on PR with Load Test Results
       if: ${{ (github.event_name == 'pull_request') && (!env.ACT) }}
       uses: thollander/actions-comment-pull-request@v3
       with:
         file-path: ${{ inputs.outputPath }}
-
-
