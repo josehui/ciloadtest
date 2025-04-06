@@ -92,8 +92,8 @@ To test the pipeline locally:
 ## Some Design Decisions
 
 1. **Kustomize for Deployment**: Kustomize is used for managing Kubernetes manifests, avoiding boilerplate and repetition of configuration.
-2. **Vegeta for Load Testing**: Vegeta is chosen for its simplicity and flexibility in performing HTTP load tests with configurable parameters. The loadtest is executed from the host instead of within the cluster to simulate external traffic going through ingress.
-3. **Metrics-server for Resource Monitoring**: metrics-server is chosen over Prometheus or other heavier solution to reduce load on runner and speed up setup.
+2. **Vegeta for Load Testing**: [Vegeta](https://github.com/tsenart/vegeta) is chosen for its simplicity and flexibility in performing HTTP load tests with configurable parameters. The loadtest is executed from the host instead of within the cluster to simulate external traffic going through ingress.
+3. **Metrics-server for Resource Monitoring**: Metrics-server is chosen over Prometheus or other heavier solution to reduce load on runner and speed up setup.
 4. **Imgur Integration**: Resource usage plots are uploaded to Imgur because I couldnt find how to upload an image to github from Github action.
 
 ---
