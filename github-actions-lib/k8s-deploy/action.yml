@@ -47,4 +47,4 @@ runs:
       shell: bash
       # Check for all deployments in the namespace
       run: |
-        kubectl -n ${{ inputs.namespace }} rollout status deployment
+        kubectl -n ${{ inputs.namespace }} rollout status deployment --timeout ${{ inputs.timeoutSeconds }}s

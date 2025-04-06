@@ -7,12 +7,18 @@ inputs:
   outputPath:
     description: 'Path to the output file'
     required: false
-    default: './loadtest_report.txt'
+    default: './loadtest_report.md'
   rate:
     description: 'Requests per second'
     required: false
   duration:
     description: 'Duration of the test (e.g., 10s, 1m)'
+    required: false
+  monitorNamespace:
+    description: 'Kubernetes namespace to monitor'
+    required: false
+  imgurClientId:
+    description: 'Client ID for Imgur'
     required: false
 
 runs:
@@ -26,18 +32,27 @@ runs:
         tar -xzf vegeta_12.12.0_linux_amd64.tar.gz
         chmod +x vegeta
         mv vegeta /usr/local/bin/vegeta
-        pip install pyyaml
+        pip install pyyaml matplotlib
 
+    - name: Start monitoring script
+      id: start_monitoring
+      if: ${{ inputs.monitorNamespace }}
+      shell: bash
+      # Scrape resource usage every 3 seconds for 10 minutes
+      run: |
+        python3 ${GITHUB_ACTION_PATH}/monitor.py ${{ inputs.monitorNamespace }} 5 600 usage.json &
+        echo "Monitoring script started"
+            
     - name: Run Vegeta Load Test and Generate Report
       id: vegeta_test
       shell: bash
-      # Use python for flexibility in config yaml
       run: |
-        python3 ${GITHUB_ACTION_PATH}/run_loadtest.py -c ${{ inputs.configPath }} -o ${{ inputs.outputPath }}
+        python3 ${GITHUB_ACTION_PATH}/run_loadtest.py -c ${{ inputs.configPath }} -o ${{ inputs.outputPath }} -m usage.json
         cat ${{ inputs.outputPath }}
       env:
         VEGETA_RATE: ${{ inputs.rate }}
         VEGETA_DURATION: ${{ inputs.duration }}
+        IMGUR_CLIENT_ID: ${{ inputs.imgurClientId }}
     
     - name: Comment on PR with Load Test Results
       if: ${{ (github.event_name == 'pull_request') && (!env.ACT) }}

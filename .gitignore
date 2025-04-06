@@ -11,3 +11,4 @@ coverage/
 .terraform.lock.hcl
 docker-compose.override.yml
 *.tfvars
+**/usage.json

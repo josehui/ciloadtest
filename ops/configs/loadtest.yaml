@@ -1,11 +1,11 @@
 test-foo:
   method: "GET"
   target: "http://foo.localhost"
-  rate: 50
-  duration: "10s"
+  rate: 3000
+  duration: "60s"
 
 test-bar:
   method: "GET"
-  target: "http://foo.localhost"
-  rate: 50
-  duration: "10s"
+  target: "http://bar.localhost"
+  rate: 3000
+  duration: "60s"

@@ -22,21 +22,25 @@ jobs:
         uses: ./github-actions-lib/k8s-setup
         with:
           installIngress: true
-      
+          installMetricServer: true
+
       - name: Deploy http-echo to Kubernetes
         uses: ./github-actions-lib/k8s-deploy
         with:
           kustomizePath: ./ops/k8s/
           namespace: http-echo
 
-      - name: Update Host File
+      - name: Update Host File for http-echo
         id: update-hostfile
         shell: bash
         run: |
           echo "127.0.0.1 foo.localhost" | sudo tee -a /etc/hosts
           echo "127.0.0.1 bar.localhost" | sudo tee -a /etc/hosts
-      
+         
       - name: Run HTTP Load Test
         uses: ./github-actions-lib/http-loadtest
         with:
           configPath: ./ops/configs/loadtest.yaml
+          monitorNamespace: http-echo
+          imgurClientId: ${{ secrets.IMGUR_CLIENT_ID }}
+
